@@ -1,0 +1,461 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
+ */
+package view;
+
+import dao.connection;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author Alan
+ */
+public class viewProduct extends javax.swing.JFrame {
+
+    Connection conexao = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+
+    /**
+     * Creates new form viewProduct
+     */
+    public viewProduct() {
+        initComponents();
+
+        Product();
+    }
+
+    public void Product() {
+
+        id.removeAllItems();
+
+        try {
+            Connection conexao = connection.Conector();
+            PreparedStatement pstm;
+            ResultSet rs;
+
+            pstm = conexao.prepareStatement("select id from Product;");
+            rs = pstm.executeQuery();
+            
+            while (rs.next()) {
+
+                id.setEnabled(true);
+                btnSeach.setEnabled(true);
+                id.addItem(rs.getString(1));
+            }
+            
+            if(id.getItemCount() < 1){
+            
+                id.setEnabled(false);
+                btnSeach.setEnabled(false);
+            }
+
+        } catch (SQLException ex) {
+        }
+    }
+
+    public void NewProduct() {
+
+        try {
+            Connection conexao = new connection().Conector();
+
+            String sql = "insert into Product(name, price, qty) values('" + txtName.getText() + "','" + txtPrice.getText() + "','" + txtQty.getText() + "');";
+
+            PreparedStatement statement = conexao.prepareStatement(sql);
+            statement.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "New Product Add Sucess");
+            
+            btnAdd.setEnabled(false);
+            btnUpdate.setEnabled(true);
+            btnDel.setEnabled(true);
+            
+            PreparedStatement pstm;
+            ResultSet rs;
+            
+            pstm = conexao.prepareStatement("SELECT ID FROM PRODUCT WHERE NAME = '"+ txtName.getText()  +"' and PRICE = "+ txtPrice.getText() +" and QTY = "+ txtQty.getText() +"");
+            rs = pstm.executeQuery();
+            rs.next();
+            
+            id.setSelectedItem(rs.getString(1));
+
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(null, "Error!");
+        }
+    }
+
+    public void Seach() {
+
+        try {
+            Connection conexao = connection.Conector();
+            PreparedStatement pstm;
+            ResultSet rs;
+
+            pstm = conexao.prepareStatement("select name,price,qty from Product where id = '" + id.getSelectedItem() + "';");
+            rs = pstm.executeQuery();
+            rs.next();
+
+            txtName.setText(rs.getString(1));
+            txtPrice.setText(rs.getString(2));
+            txtQty.setText(rs.getString(3));
+            
+            txtName.setEnabled(true);
+            txtPrice.setEnabled(true);
+            txtQty.setEnabled(true);
+            btnAdd.setEnabled(false);
+            btnUpdate.setEnabled(true);
+            btnDel.setEnabled(true);
+            
+        } catch (SQLException ex) {
+
+        }
+    }
+
+    public void Update() {
+
+        try {
+            Connection conexao = new connection().Conector();
+
+            String sql = "update Product set name = '" + txtName.getText() + "', price = " + txtPrice.getText() + ", qty = " + txtQty.getText() + " where id = " + id.getSelectedItem() + ";";
+
+            PreparedStatement statement = conexao.prepareStatement(sql);
+            statement.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Update Sucess");
+
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(null, "Error!");
+        }
+    }
+    
+    public void Delete() {
+
+        try {
+            Connection conexao = new connection().Conector();
+
+            String sql = "delete from Product where id = " + id.getSelectedItem() + ";";
+
+            PreparedStatement statement = conexao.prepareStatement(sql);
+            statement.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Delete Sucess");
+            
+            txtName.setText("");
+            txtPrice.setText("");
+            txtQty.setText("");
+            txtName.setEnabled(false);
+            txtPrice.setEnabled(false);
+            txtQty.setEnabled(false);
+            btnUpdate.setEnabled(false);
+            btnDel.setEnabled(false);
+
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(null, "Error!");
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        txtName = new javax.swing.JTextField();
+        txtPrice = new javax.swing.JTextField();
+        txtQty = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        id = new javax.swing.JComboBox<>();
+        btnSeach = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        btnAdd = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        btnDel = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Product");
+        setResizable(false);
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel1.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel1.setFont(new java.awt.Font("Dialog", 1, 30)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel1.setText("Product Information");
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 204, 204), 1, true), "Product Information", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.TOP, new java.awt.Font("Dialog", 1, 12), new java.awt.Color(0, 0, 0))); // NOI18N
+        jPanel2.setForeground(new java.awt.Color(0, 0, 0));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel2.setText("Product Name");
+        jPanel2.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, -1, -1));
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel3.setText("Price");
+        jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, -1, -1));
+
+        jLabel4.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel4.setText("Qty");
+        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, -1, -1));
+
+        txtName.setEnabled(false);
+        jPanel2.add(txtName, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 40, 180, -1));
+
+        txtPrice.setEnabled(false);
+        jPanel2.add(txtPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 110, 180, -1));
+
+        txtQty.setBackground(new java.awt.Color(255, 255, 255));
+        txtQty.setEnabled(false);
+        jPanel2.add(txtQty, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 180, 180, -1));
+
+        jLabel5.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel5.setText("Product ID");
+        jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(426, 43, -1, -1));
+
+        id.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        id.setBorder(null);
+        id.setEnabled(false);
+        id.setFocusable(false);
+        jPanel2.add(id, new org.netbeans.lib.awtextra.AbsoluteConstraints(406, 99, 148, 40));
+
+        btnSeach.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        btnSeach.setText("Seach");
+        btnSeach.setEnabled(false);
+        btnSeach.setFocusPainted(false);
+        btnSeach.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSeachActionPerformed(evt);
+            }
+        });
+        jPanel2.add(btnSeach, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 170, 86, 36));
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 1, new java.awt.Color(204, 204, 204)));
+        jPanel3.setForeground(new java.awt.Color(0, 0, 0));
+
+        btnAdd.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        btnAdd.setText("Add");
+        btnAdd.setEnabled(false);
+        btnAdd.setFocusable(false);
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
+
+        btnUpdate.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        btnUpdate.setText("Update");
+        btnUpdate.setEnabled(false);
+        btnUpdate.setFocusPainted(false);
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        btnDel.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        btnDel.setText("Delete");
+        btnDel.setEnabled(false);
+        btnDel.setFocusPainted(false);
+        btnDel.setFocusable(false);
+        btnDel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDelActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnDel, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(18, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnDel, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16))
+        );
+
+        jButton4.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jButton4.setText("New");
+        jButton4.setFocusPainted(false);
+        jButton4.setFocusable(false);
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(61, 61, 61)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 570, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addComponent(jLabel1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 233, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(23, 23, 23))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(31, 31, 31))))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        setSize(new java.awt.Dimension(616, 454));
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+
+        txtName.setText("");
+        txtPrice.setText("");
+        txtQty.setText("");
+        txtName.setEnabled(true);
+        txtPrice.setEnabled(true);
+        txtQty.setEnabled(true);
+        btnAdd.setEnabled(true);
+        btnUpdate.setEnabled(false);
+        btnDel.setEnabled(false);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+
+        NewProduct();
+        Product();
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnSeachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSeachActionPerformed
+
+        Seach();
+    }//GEN-LAST:event_btnSeachActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+
+        Update();
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelActionPerformed
+        
+        Delete();
+        Product();
+    }//GEN-LAST:event_btnDelActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(viewProduct.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(viewProduct.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(viewProduct.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(viewProduct.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new viewProduct().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnDel;
+    private javax.swing.JButton btnSeach;
+    private javax.swing.JButton btnUpdate;
+    private javax.swing.JComboBox<String> id;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JTextField txtName;
+    private javax.swing.JTextField txtPrice;
+    private javax.swing.JTextField txtQty;
+    // End of variables declaration//GEN-END:variables
+}
